@@ -1,38 +1,58 @@
 # sv
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Everything you need to get started on Fly.io
+
+Prerequisites (you probably won't need these):
+
+- `nvm install 20.19.0`
+- `nvm use 20.19.0`
 
 ## Creating a project
 
 If you're seeing this, you've probably already done this step. Congrats!
 
-```sh
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+```bash
+# create a new project
+npx sv create socketphysics # you won't need this
 ```
 
 ## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Installed dependencies with `pnpm install`, start a development server:
 
-```sh
+```bash
 npm run dev
 
 # or start the server and open the app in a new browser tab
 npm run dev -- --open
 ```
 
-## Building
+## Connecting to Fly.io
 
-To create a production version of your app:
+Log into your fly.io account using Github, and connect to your account repo.
 
-```sh
-npm run build
+Locate your repo from the cli and `fly launch --no-deploy`.
+
+Locate your repo from the cli and `fly deploy`, will build your `Dockerfile` and serve it to [Mixed Reality Pong](https://mixedrealitypong.fly.dev/).
+
+## Warning about using WASM/Rapier
+
+> NOTE THESE COMMENTED LINES, YOU CAN'T USE `WASM` WITHOUT A `Dockerfile`
+
+```bash
+pnpm uninstall vite-plugin-wasm
 ```
 
-You can preview the production build with `npm run preview`.
+Check that no Rapier code is left behind, such as: `src/routes/obman`.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```typescript
+// vite.config.ts
+// import wasm from 'vite-plugin-wasm'; // Rust is a statically typed language that compiles Rapier to WASM
+
+  plugins: [
+    // wasm(), // for dependencies built Rust’s wasm-pack
+  ]
+});
+
+// see: perplexity.ai/search/does-rapier-physics-work-with-VQ3x7r5sQtWXKH_mdqg76A
+```
