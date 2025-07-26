@@ -35,7 +35,29 @@ Locate your repo from the cli and `fly launch --no-deploy`.
 
 Locate your repo from the cli and `fly deploy`, will build your `Dockerfile` and serve it to [Mixed Reality Pong](https://mixedrealitypong.fly.dev/).
 
-## Warning about using WASM/Rapier
+### Your JS needs to be copied manually to the `Dockerfile`:
+
+```Dockerfile
+# Final stage for app image
+FROM base
+
+# Copy built application
+COPY --from=build /app/build /app/build
+COPY --from=build /app/node_modules /app/node_modules
+COPY --from=build /app/package.json /app
+
+# Copy the custom server entrypoint and backend (inc. physics.js)
+COPY --from=build /app/server.js /app/server.js
+COPY --from=build /app/src/lib /app/src/lib
+
+# Start the server by default, this can be overwritten at runtime
+EXPOSE 3000
+CMD [ "node", "./build/index.js" ]
+
+CMD [ "node", "server.js" ]
+```
+
+### Warning about using WASM/Rapier
 
 > NOTE THESE COMMENTED LINES, YOU CAN'T USE `WASM` WITHOUT A `Dockerfile`
 
